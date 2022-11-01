@@ -28,34 +28,6 @@ const sizes = {
 };
 
 /**
- * Allow canvas to fill viewport even after resizing the window
- */
-window.addEventListener("resize", () => {
-  // Update sizes
-  sizes.width = window.innerWidth;
-  sizes.height = window.innerHeight;
-
-  // Update camera
-  camera.aspect = sizes.width / sizes.height;
-  camera.updateProjectionMatrix();
-
-  // Update renderer
-  renderer.setSize(sizes.width, sizes.height);
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio), 2);
-});
-
-/**
- * change view to fullscreen. Will not work with Safari
- */
-window.addEventListener("dblclick", () => {
-  if (!document.fullscreenElement) {
-    canvas.requestFullscreen();
-  } else {
-    document.exitFullscreen();
-  }
-});
-
-/**
  * Camera
  */
 // Base camera
@@ -70,6 +42,7 @@ scene.add(camera);
 
 // Controls
 const controls = new OrbitControls(camera, canvas);
+// controls.enabled = false;
 controls.enableDamping = true;
 
 /**
@@ -79,7 +52,6 @@ const renderer = new THREE.WebGLRenderer({
   canvas: canvas,
 });
 renderer.setSize(sizes.width, sizes.height);
-renderer.setPixelRatio(Math.min(window.devicePixelRatio), 2);
 
 /**
  * Animate
@@ -89,10 +61,10 @@ const clock = new THREE.Clock();
 const tick = () => {
   const elapsedTime = clock.getElapsedTime();
 
+  mesh.rotation.y = elapsedTime;
+
   // Update controls
   controls.update();
-
-  mesh.rotation.y = elapsedTime;
 
   // Render
   renderer.render(scene, camera);
